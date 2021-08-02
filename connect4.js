@@ -14,6 +14,7 @@
 /** makeBoard: create in-JS board structure:
  *   board = array of rows, each row is array of cells  (board[y][x])
  */
+
 class Game {
   constructor(HEIGHT, WIDTH){
     this.WIDTH = 7;
@@ -88,23 +89,28 @@ class Game {
     const x = +evt.target.id;
   
     // get next spot in column (if none, ignore click)
-    const y = this.findSpotForCol(x);
+    let game = new Game();
+    let findSpot = game.findSpotForCol.bind(game);
+    const y = findSpot(x);
     if (y === null) {
       return;
     }
   
     // place piece in board and add to HTML table
+    let placeBall = game.placeInTable.bind(game);
     this.board[y][x] = this.currPlayer;
-    this.placeInTable(y, x);
+    placeBall(y, x);
     
     // check for win
-    if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+    let checkWin = game.checkForWin.bind(game);
+    let end = game.endGame.bind(game);
+    if (checkWin) {
+      return end(`Player ${this.currPlayer} won!`);
     }
     
     // check for tie
     if (this.board.every(row => row.every(cell => cell))) {
-      return this.endGame('Tie!');
+      return end('Tie!');
     }
       
     // switch players
@@ -152,7 +158,8 @@ class Player{
   }
 }
 
-let newGame = new Game(6, 7); 
+let newGame = new Game(); 
+
 
 const startBtn = document.getElementById('submitBtn');
 
