@@ -21,6 +21,8 @@ class Game {
     this.HEIGHT = 6;
     this.currPlayer = 1;
     this.board = [];
+    this.makeBoard();
+    this.makeHtmlBoard();
   }
   
   makeBoard() {
@@ -35,8 +37,10 @@ class Game {
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', this.handleClick);
+    
 
+    this.handleGameClick = this.handleClick.bind(this);
+    top.addEventListener('click', this.handleGameClick);
   
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
@@ -89,28 +93,23 @@ class Game {
     const x = +evt.target.id;
   
     // get next spot in column (if none, ignore click)
-    let game = new Game();
-    let findSpot = game.findSpotForCol.bind(game);
-    const y = findSpot(x);
+    const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
   
     // place piece in board and add to HTML table
-    let placeBall = game.placeInTable.bind(game);
     this.board[y][x] = this.currPlayer;
-    placeBall(y, x);
+    this.placeInTable(y, x);
     
     // check for win
-    let checkWin = game.checkForWin.bind(game);
-    let end = game.endGame.bind(game);
-    if (checkWin) {
-      return end(`Player ${this.currPlayer} won!`);
+    if (this.checkForWin()) {
+      return this.endGame(`Player ${this.currPlayer} won!`);
     }
     
     // check for tie
     if (this.board.every(row => row.every(cell => cell))) {
-      return end('Tie!');
+      return this.endGame('Tie!');
     }
       
     // switch players
@@ -158,17 +157,16 @@ class Player{
   }
 }
 
-let newGame = new Game(); 
 
 
 const startBtn = document.getElementById('submitBtn');
 
 startBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  newGame.makeBoard();
-  newGame.makeHtmlBoard();
+  new Game();
   startBtn.innerText = 'Restart the game';
   startBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
     window.location.reload(false);
   })
 })
