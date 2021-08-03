@@ -5,24 +5,22 @@
 </head>
 <body>
 
-  <div id="formContainer">
-    <form id="colorForm">
-      <label>Player 1:</label>
-      <br>
-      <input type="text" name="color" class="colorP1">
-      <br>
-      <label>Player 2:</label>
-      <br>
-      <input type="text" name="color" class="colorP2">
-      <br>
-      <button id="submitBtn">Start Game</button>
-    </form>
-  </div>
-  
-  <div id="game">
-    <table id="board">
+  <div id="container">
+    <div id="game">
+      <h1 id='header'>CONNECT FOUR</h1>
+      <form id="colorForm">
+        <label>Player 1:</label>
+        <input type="text" name="color" class="P1Color inputBox">
+        <br>
+        <label>Player 2:</label>
+        <input type="text" name="color" class="P2Color inputBox">
+        <br>
+        <button id="submitBtn" class="startBtn">Start Game</button>
+      </form>
+      <table id="board">
 
-    </table>
+      </table>
+    </div>
   </div>
 
   <script src="connect4oo.js"></script>

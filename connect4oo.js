@@ -16,10 +16,12 @@
  */
 
 class Game {
-  constructor(HEIGHT, WIDTH){
+  constructor(p1, p2, HEIGHT, WIDTH){
+    this.p1 = p1;
+    this.p2 = p2;
     this.WIDTH = 7;
     this.HEIGHT = 6;
-    this.currPlayer = 1;
+    this.currPlayer = p1;
     this.board = [];
     this.makeBoard();
     this.makeHtmlBoard();
@@ -76,7 +78,8 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = this.currPlayer.color;
+    console.log(this.currPlayer.color);
     piece.style.top = -50 * (y + 2);
   
     const spot = document.getElementById(`${y}-${x}`);
@@ -85,7 +88,8 @@ class Game {
 
   endGame(msg) {
     alert(msg);
-    // this.top.removeEventListener('click', this.handleClick);
+    let topRow = document.getElementById('column-top')
+    topRow.removeEventListener('click', this.handleGameClick);
   }
 
   handleClick(evt) {
@@ -104,7 +108,7 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player color ${this.currPlayer.color} won!`);
     }
     
     // check for tie
@@ -113,11 +117,11 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
   }
 
   checkForWin() {
-    function _win(cells) {
+    const _win = (cells) => {
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
@@ -151,9 +155,9 @@ class Game {
   
 }
 
-class Player{
-  constructor(color){
-    this.player = color;
+class Player {
+  constructor(color) {
+    this.color = color;
   }
 }
 
@@ -163,13 +167,26 @@ const startBtn = document.getElementById('submitBtn');
 
 startBtn.addEventListener('click', (e) => {
   e.preventDefault();
-  new Game();
-  startBtn.innerText = 'Restart the game';
-  startBtn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    window.location.reload(false);
-  })
+  let player1 = new Player(document.querySelector('.P1Color').value);
+  let player2 = new Player(document.querySelector('.P2Color').value);
+  new Game(player1, player2);
+  startBtn.remove();
+
+  let restartBtn = document.createElement('button');
+  restartBtn.innerText = 'Restart';
+  restartBtn.setAttribute('id', 'restartButton');
+  
+  let gameDiv = document.getElementById('game');
+  gameDiv.append(restartBtn);
+
+  restartBtn.addEventListener('click', restart)
+
 })
+
+function restart(){
+  window.location.reload(false);
+}
+
 
 
 
